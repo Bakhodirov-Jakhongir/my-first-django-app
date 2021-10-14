@@ -65,7 +65,3 @@ class CartItem(models.Model):
     order = models.ForeignKey(OrderItem , on_delete=CASCADE)
     cart = models.ForeignKey(Cart , on_delete=CASCADE)
     quantity = models.PositiveSmallIntegerField()
-
-
-
-
