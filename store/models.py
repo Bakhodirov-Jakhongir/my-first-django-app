@@ -33,7 +33,7 @@ class Customer(models.Model):
     email = models.CharField(max_length=255 , unique=True)
     phone = models.CharField(max_length=13 , unique=True)
     birth_date = models.DateField(null=True)
-    memberships = models.CharField(max_length=2 , choices=MEMBERCHIPS_CHOICES)
+    membership = models.CharField(max_length=2 , choices=MEMBERCHIPS_CHOICES)
 class Order(models.Model):
     placed_at = models.DateTimeField(auto_now=True)
     PAYMENT_STATUS_PENDING = 'P'
