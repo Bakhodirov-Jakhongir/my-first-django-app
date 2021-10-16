@@ -1,19 +1,23 @@
 from django.db import models
-from django.db.models.base import Model
-from django.db.models.deletion import CASCADE, PROTECT
-from django.db.models.expressions import Case
-from django.db.models.fields.related import ForeignKey
-
+from django.db.models.deletion import CASCADE, PROTECT, SET_NULL
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 # Create your models here.
+class Promotion(models.Model):
+    description = models.CharField(max_length=255)
+    discount = models.FloatField()
+    #product_set automatically django accept reverse relationships
 class Collection(models.Model):
     title = models.CharField(max_length=255)
+    peatured_product = models.ForeignKey('Product' , on_delete=SET_NULL , null=True , related_name='+')
 class Product(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    price =models.DecimalField(max_digits=8 , decimal_places=2)
+    price = models.DecimalField(max_digits=8 , decimal_places=2)
     inventory = models.IntegerField()
     last_updated = models.DateTimeField(auto_now=True)
     product = models.ForeignKey(Collection , on_delete=PROTECT)    # one To Many Relationships 
+    promotions = models.ManyToManyField(Promotion)   
 
 class Customer(models.Model):
     MEMBERCHIP_BRONZE = 'B'
@@ -65,3 +69,14 @@ class CartItem(models.Model):
     order = models.ForeignKey(OrderItem , on_delete=CASCADE)
     cart = models.ForeignKey(Cart , on_delete=CASCADE)
     quantity = models.PositiveSmallIntegerField()
+
+class Tag(models.Model):
+    label = models.CharField(max_length=255)
+
+class TaggedItem(models.Model):
+    tag = models.ForeignKey(Tag , on_delete=models.CASCADE)
+
+    #Type(Product , Video , Article)
+    content_type = models.ForeignKey(ContentType , on_delete=models.CASCADE)
+    object_id = models.PositiveSmallIntegerField()
+    content_object = GenericForeignKey()
